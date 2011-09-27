@@ -4,11 +4,11 @@ This project is to create a botnet in android OS.
 We use Sms and Internet to let the botnet communicate
 with each other.
 
-Framework:
+Framework Outline:
 The project can be seperate into three components:
 a. Receiver component:
-	this component will receive the message from the master bot
-	or other bot and handle the command to the command component.
+	the component will receive the message from the master bot
+	or other bots and send the command to the command component.
 b. Command component:
 	the component will handle the command and do what the command
 	ask the machine to do.
