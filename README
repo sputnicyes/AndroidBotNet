@@ -6,6 +6,7 @@ with each other.
 
 Framework Outline:
 The project can be seperate into three components:
+
 a. Receiver component:
 	the component will receive the message from the master bot
 	or other bots and send the command to the command component.
@@ -15,3 +16,34 @@ b. Command component:
 c. Auxiliary component:
 	the component will help the program work nicely, and prevent 
 	the program to crash down.
+	
+The following is how the three components work with each other
+	<figure 1>
+	sms command						network server command
+	|								|
+	|								|
+	v								v
+	---------------------------------
+	|								|
+	|		Receiver component		|
+	|								|
+	---------------------------------
+					|
+					| add job and
+					v start service()
+	---------------------------------
+	|								|
+	|		Auxiliary component		|
+	|								|
+	---------------------------------
+		|					^
+		| start 			| get job
+		v					|
+	---------------------------------
+	|								|
+	|		Command component		|
+	|								|
+	---------------------------------
+	
+	
+
