@@ -19,31 +19,31 @@ c. Auxiliary component:
 	
 The following is how the three components work with each other
 	<figure 1>
-	sms command						network server command
-	|								|
-	|								|
-	v								v
-	---------------------------------
-	|								|
-	|		Receiver component		|
-	|								|
-	---------------------------------
-					|
-					| add job and
-					v start service()
-	---------------------------------
-	|								|
-	|		Auxiliary component		|
-	|								|
-	---------------------------------
-		|					^
-		| start 			| get job
-		v					|
-	---------------------------------
-	|								|
-	|		Command component		|
-	|								|
-	---------------------------------
+	sms command			network server command
+	|						|
+	|						|
+	v						v
+	-----------------------------
+	|							|
+	|	Receiver component		|
+	|							|
+	-----------------------------
+				|
+				| add job and
+				v start service()
+	-----------------------------
+	|							|
+	|	Auxiliary component		|
+	|							|
+	-----------------------------
+		|			^
+		| start 	| get job
+		v			|
+	-----------------------------
+	|							|
+	|	Command component		|
+	|							|
+	-----------------------------
 	
 	
 
