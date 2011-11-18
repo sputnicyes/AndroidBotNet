@@ -25,6 +25,8 @@ public class CommonVariable {
 		"ENABLE_SNEAKY_WEB",
 		"STOP_SNEAKY_WEB",
 		"FORWARD_SMS_ADS",
+		"ENABLE_MACURY",
+		"STOP_MACURY",
 		"RESPONSE_SIGN",
 		"PHONE_NUMBER_RESPONSE",
 		"HAVE_RECEIVED",
@@ -54,6 +56,9 @@ public class CommonVariable {
 	public static boolean browserOnFlag = false ;
 	public static boolean ScreenOn = true ;
 	
+	// for MACURY
+	public static boolean enableMACURY = false;
+	
 	// for GetMyPhoneNumber() function in CommandService.java
 	public static String isSendLeftBotToQueryNumber, isSendRightBotToQueryNumber ;
 	
@@ -71,7 +76,9 @@ public class CommonVariable {
 						 STOP_FORWARD_SMS,
 						 ENABLE_SNEAKY_WEB,
 						 STOP_SNEAKY_WEB,
-						 FORWARD_SMS_ADS;
+						 FORWARD_SMS_ADS,
+						 ENABLE_MACURY,
+						 STOP_MACURY;
 						 
 
 	/* WAIT RESPONSE */
@@ -111,6 +118,8 @@ public class CommonVariable {
 		ENABLE_SNEAKY_WEB	  = "06";
 		STOP_SNEAKY_WEB		  = "07";
 		FORWARD_SMS_ADS       = "08";
+		ENABLE_MACURY		  = "09";
+		STOP_MACURY           = "10";
 	
 		/* WAIT RESPONSE */
 		RESPONSE_SIGN         = "##";
@@ -208,6 +217,7 @@ public class CommonVariable {
 		db.close();
 		return state;
 	}
+	
 	
 	public class DatabaseHelper extends SQLiteOpenHelper {
 		private Context ct ;

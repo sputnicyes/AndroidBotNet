@@ -86,10 +86,10 @@ public class ResponseService extends Service{
 				WaitMode(job.number,job.command,ResponseTable.getResponseJob(job.number));
 			}	
 		}
-		
 		this.stopSelf();
 		return START_STICKY;
 	}
+	
 	
 	private boolean WaitMode( String sender, String message, ResponseTableElement job) {			
 		Debug.PrintLog("ResponseService","WaitMode get: " + message);
