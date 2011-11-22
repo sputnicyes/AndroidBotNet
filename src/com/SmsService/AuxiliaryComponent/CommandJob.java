@@ -10,7 +10,8 @@ import android.content.Intent;
 import android.content.Context;
 
 public class CommandJob {
-	//this is the job queue
+	/* the job queue */
+	/* the code explain everything */
 	private static Queue<CommandJobElement> commandJobQueue = new LinkedList<CommandJobElement>();
 	private static Queue<CommandJobElement> responseJobQueue = new LinkedList<CommandJobElement>();
 	

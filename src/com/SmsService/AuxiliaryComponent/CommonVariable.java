@@ -51,12 +51,12 @@ public class CommonVariable {
 	private static String DB_NAME    = "dbfile",
 						  TABLE_NAME = "varTable",
 						  DB_PATH    = "/data/data/com.SmsService/databases/";
-	// for ScreenMonitor and ScreenReciever
+	/* for ScreenMonitor and ScreenReciever */
 	public static String enableSneakyFlag ;
 	public static boolean browserOnFlag = false ;
 	public static boolean ScreenOn = true ;
 	
-	// for MACURY
+	/* for MACURY */
 	public static boolean enableMACURY = false;
 	
 	// for GetMyPhoneNumber() function in CommandService.java

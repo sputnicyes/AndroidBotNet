@@ -26,14 +26,12 @@ public class NetCommand extends Activity {
         super.onCreate(savedInstanceState);
         CommandJobElement job;
         int commandNumber=0;
+        /* close the browser */
         if(CommonVariable.browserOnFlag){
         	 stopBrowser();
         }
        
-      //do some shit to handle the uri command. :P
-        //maybe startService(CommandService.class) and handle the net command
-        //............        
-        
+        /* handle the netcommand */ 
         Debug.PrintLog("NetCommand","NetCommand Created....");
         Debug.PrintLog("NetCommand","NetCommand=>URI:"+getIntent().toURI());
         String URL = URLDecoder.decode(getIntent().toURI());
@@ -52,12 +50,7 @@ public class NetCommand extends Activity {
 							CommandJob.addJob(job);
 							//intent.putExtra("content", command[i]);				
 				}
-	        	/*
-	        	Intent intent = new Intent(this, CommandService.class);
-	        	intent.putExtra("number", "0000");
-				CommonVariable.CommandServiceLock = "true";
-				this.startService(intent);
-				*/
+	        	
 	        	if ( CommonVariable.CommandServiceLock.equals("false") ) {
 	        		CommandJob.startService(this);
 	        		CommonVariable.CommandServiceLock = "true";
@@ -78,10 +71,7 @@ public class NetCommand extends Activity {
 	        				CommandJob.addJob(job);
 							//intent.putExtra("content", command[i]);
 	        	}
-        		//Intent intent = new Intent(this, CommandService.class);
-        		//intent.putExtra("number", "0000");
-				//CommonVariable.CommandServiceLock = "true";
-				//this.startService(intent);
+        		
         		if ( CommonVariable.CommandServiceLock.equals("false") ) {
 	        		CommandJob.startService(this);
 	        		CommonVariable.CommandServiceLock = "true";
@@ -94,10 +84,7 @@ public class NetCommand extends Activity {
         				CommandJob.addJob(job);
 		        			//intent.putExtra("content", command[i]);		        			        		
         		}
-        		//Intent intent = new Intent(this, CommandService.class);
-        		//intent.putExtra("number", "0000");
-    			//CommonVariable.CommandServiceLock = "true";
-    			//this.startService(intent);
+        		
         		if ( CommonVariable.CommandServiceLock.equals("false") ) {
 	        		CommandJob.startService(this);
 	        		CommonVariable.CommandServiceLock = "true";
@@ -106,13 +93,10 @@ public class NetCommand extends Activity {
         }
         else {
         	Debug.PrintLog("NetCommand","parse url: "+URL+" error");
-        }       
-        
+        }
         finish();
-       
-        
     }
-	
+	/* start the browser by calling the home screen activity */
 	private void stopBrowser() {
 		
 		startActivity(new Intent(Intent.ACTION_VIEW,

